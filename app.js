@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -7,9 +9,19 @@ var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
-
+var mongoose = require('mongoose');
+mongoose.connect(process.env.MONGODB_URI);
 var app = express();
 
+const db = mongoose.connection
+
+db.on("error", (error) => {
+  console.log(error)
+})
+
+db.once("open", () => {
+  console.log("connected to MongoDB")
+})
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
